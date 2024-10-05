@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+#svgDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#municipality-name-container {
+  text-align: center;
+  margin: 20px;
+  width: 300px;
+}
+
+#game-start {
+  text-align: center;
+  margin: 20px;
+  width: 150px;
+}
+
+#game-restart {
+  text-align: center;
+  margin: 20px;
+  width: 150px;
+}

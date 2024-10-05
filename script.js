@@ -6,6 +6,23 @@ function shuffleArray(array) {
   return array;
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function flashMunicipality(element) {
+  element.style.fillOpacity = 1;
+  await delay(500);
+  element.style.fillOpacity = 0.5;
+  await delay(500);
+  element.style.fillOpacity = 1;
+  await delay(500);
+  element.style.fillOpacity = 0.5;
+  await delay(500);
+  element.style.fillOpacity = 1;
+  await delay(500);
+}
+
 document.body.onload = () => {
   document.querySelector("#buttons-div").style.display = "block";
 };
@@ -53,8 +70,9 @@ console.log(randomArray);
 //     console.log("mapa click");
 // })
 
+let currentTries = 0;
 for (let m of municipalities) {
-  let currentTries = 0;
+  const municipalityColor = m.style.fill;
   //   tries++;
   const mouseoutSVG = () => {
     // m.style.opacity = 0.7;
@@ -81,8 +99,18 @@ for (let m of municipalities) {
     if (currentTries === 3) {
       currentTries = 0;
       console.log("Niste pogodili opcinu");
-      document.querySelector(`[id="${municipalityName.innerText}"]`).style.fillOpacity = 1;
-      document.querySelector(`[id="${municipalityName.innerText}"]`).style.stroke = "#000000";
+      const missedMunicipality = document.querySelector(`[id="${municipalityName.innerText}"]`);
+      missedMunicipality.style.fillOpacity = 1;
+      missedMunicipality.style.stroke = "#000000";
+      missedMunicipality.style.fill = "magenta";
+      flashMunicipality(missedMunicipality);
+
+      // for (let mun of municipalities) {
+      //     mun.style.pointerEvents = "none";
+      //     mun.style.userSelect = "none";
+      // }
+      // m.style.pointerEvents = "auto";
+      // m.style.userSelect = "auto";
     }
     if (municipalityName.innerText === m.id) {
       currentTries = 0;
@@ -90,6 +118,10 @@ for (let m of municipalities) {
       console.log(m.id);
       m.style.fillOpacity = 1;
       m.removeEventListener("mouseout", mouseoutSVG);
+
+      m.style.pointerEvents = "none";
+      m.style.userSelect = "none";
+      m.style.fill = municipalityColor;
       nextMunicipality();
     }
     if (tries === numberOfMunicipalities - 1) {
