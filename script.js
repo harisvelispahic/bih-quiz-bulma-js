@@ -11,14 +11,16 @@ function delay(ms) {
 }
 
 async function flashMunicipality(element) {
-  element.style.fillOpacity = 1;
-  await delay(500);
-  element.style.fillOpacity = 0.5;
-  await delay(500);
-  element.style.fillOpacity = 1;
-  await delay(500);
-  element.style.fillOpacity = 0.5;
-  await delay(500);
+  //   element.style.fillOpacity = 1;
+  //   await delay(500);
+  //   element.style.fillOpacity = 0.5;
+  //   await delay(500);
+  for (let i = 0; i < 3; i++) {
+    element.style.fillOpacity = 1;
+    await delay(350);
+    element.style.fillOpacity = 0.5;
+    await delay(350);
+  }
   element.style.fillOpacity = 1;
   await delay(500);
 }
@@ -38,7 +40,7 @@ let counter = 1;
 let tries = 0;
 let points = 0;
 let numberOfMunicipalities = municipalities.length;
-// let numberOfMunicipalities = 9;
+// let numberOfMunicipalities = 10;
 
 // BosniaAndHerzegovina.addEventListener("click", (event) => {
 //   event.stopPropagation();
@@ -96,13 +98,21 @@ for (let m of municipalities) {
     // m.removeEventListener("click");  // ukloniti da se ne moze klikat vise
 
     currentTries++;
-    if (currentTries === 3) {
+    if (currentTries === 3 && municipalityName.innerText !== m.id) {
       currentTries = 0;
       console.log("Niste pogodili opcinu");
       const missedMunicipality = document.querySelector(`[id="${municipalityName.innerText}"]`);
       missedMunicipality.style.fillOpacity = 1;
       missedMunicipality.style.stroke = "#000000";
       missedMunicipality.style.fill = "magenta";
+      for (let mun of municipalities) {
+        mun.style.pointerEvents = "none";
+        mun.style.userSelect = "none";
+        if (mun.style.fill === "magenta") {
+          mun.style.pointerEvents = "auto";
+          mun.style.userSelect = "auto";
+        }
+      }
       flashMunicipality(missedMunicipality);
 
       // for (let mun of municipalities) {
@@ -123,9 +133,19 @@ for (let m of municipalities) {
       m.style.userSelect = "none";
       m.style.fill = municipalityColor;
       nextMunicipality();
+
+      for (let mun of municipalities) {
+        if (mun.style.fillOpacity != 1) {
+          //   console.log("Info");
+          mun.style.pointerEvents = "auto";
+          mun.style.userSelect = "auto";
+        }
+      }
     }
+
     if (tries === numberOfMunicipalities - 1) {
-      alert(`GAME OVER\nSCORE: ${((points / numberOfMunicipalities) * 100).toFixed(1)}%`);
+      //   alert(`GAME OVER\nSCORE: ${((points / numberOfMunicipalities) * 100).toFixed(1)}%`);
+      municipalityName.innerText = `Rezultat: ${points} / ${numberOfMunicipalities}`;
     }
     tries++;
     console.log(tries);
