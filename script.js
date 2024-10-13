@@ -1,3 +1,25 @@
+document.addEventListener("contextmenu", function (event) {
+  event.preventDefault();
+});
+
+async function spawnErrorTag(m, event) {
+  const errorTag = document.createElement("span");
+  errorTag.innerHTML = `<span id="errTag" class="tag is-danger">${m.id}</span>`;
+  document.body.append(errorTag);
+  errorTag.classList.add("errorTag");
+
+  errorTag.style.left = `${event.clientX - 25}px`;
+  errorTag.style.top = `${event.clientY - 25}px`;
+
+  await delay(1000);
+
+  errorTag.style.display = "none";
+}
+
+// async function handleErrorTag(m, id) {
+//   const element = await spawnErrorTag(m, event);
+// }
+
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -66,7 +88,7 @@ function nextMunicipality() {
 
 startGameButton.addEventListener("click", startGame);
 
-console.log(randomArray);
+// console.log(randomArray);
 
 // map.addEventListener("click",()=>{
 //     console.log("mapa click");
@@ -91,15 +113,21 @@ for (let m of municipalities) {
     // console.log(m.id);
   });
   m.addEventListener("mouseout", mouseoutSVG);
-  m.addEventListener("click", () => {
+  m.addEventListener("click", (event) => {
     // console.log(m.id);
     // m.style.fillOpacity = 1;
     // m.removeEventListener("mouseout", mouseoutSVG);
     // m.removeEventListener("click");  // ukloniti da se ne moze klikat vise
 
     currentTries++;
+
+    if (municipalityName.innerText !== m.id) {
+      spawnErrorTag(m, event);
+    }
+
     if (currentTries === 3 && municipalityName.innerText !== m.id) {
       currentTries = 0;
+
       console.log("Niste pogodili opcinu");
       const missedMunicipality = document.querySelector(`[id="${municipalityName.innerText}"]`);
       missedMunicipality.style.fillOpacity = 1;
@@ -151,8 +179,16 @@ for (let m of municipalities) {
     console.log(tries);
   });
 }
-// let points = 0;
-// let currentTries = 0;
-// let mIndex = 0;
 
-// const pinTheMunicipalities = () => {};
+const controlbButtons = document.querySelector("#buttons-div");
+
+startGameButton.addEventListener("click", function () {
+  this.style.display = "none";
+  expand();
+});
+
+function expand() {
+  controlbButtons.style.transition = "1s";
+  controlbButtons.style.width = "400px";
+  controlbButtons.style.height = "200px";
+}

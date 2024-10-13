@@ -26,3 +26,16 @@
   margin: 20px;
   width: 150px;
 }
+
+.errorTag {
+  position: fixed;
+  z-index: 100;
+  top: 10px;
+  left: 10px;
+}
+
+.errorTag span {
+  background-color: rgb(255, 47, 47);
+  color: white;
+  font-weight: bold;
+}

@@ -1729,13 +1729,18 @@
       </svg>
     </div>
 
-    <div id="buttons-div" style="position: fixed; bottom: 10px; display: none">
+    <div id="game-start-div" style="position: fixed; bottom: 10px; display: block">
+      <button id="game-start" class="button is-info is-dark">Započni igru</button>
+    </div>
+
+    <div id="buttons-div" style="position: fixed; bottom: 10px; display: none; width: 0; height: 0">
       <div id="municipality-name-container" class="box" style="box-shadow: 0px 5px 10px 0px rgba(255, 255, 255, 0.1)">
         <h4 id="municipality-name" class="title is-4" style="user-select: none">Ime grada</h4>
       </div>
-      <button id="game-start" class="button is-info is-dark">Započni igru</button>
-      <button id="game-restart" class="button is-info is-dark">Igraj ponovo</button>
+      <!-- <button id="game-start" class="button is-info is-dark">Započni igru</button> -->
+      <button id="game-restart" class="button is-info is-dark" style="width: 70%">Igraj ponovo</button>
     </div>
+    <!-- <span class="tag is-danger" style="background-color: rgb(255, 47, 47)">Danger</span> -->
 
     <script src="script.js"></script>
   </body>
