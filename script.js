@@ -8,8 +8,8 @@ async function spawnErrorTag(m, event) {
   document.body.append(errorTag);
   errorTag.classList.add("errorTag");
 
-  errorTag.style.left = `${event.clientX - 25}px`;
-  errorTag.style.top = `${event.clientY - 25}px`;
+  errorTag.style.left = `${event.clientX - parseFloat(window.getComputedStyle(errorTag).width) / 2}px`;
+  errorTag.style.top = `${event.clientY - 27}px`;
 
   await delay(1000);
 
