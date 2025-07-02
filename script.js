@@ -1,60 +1,9 @@
-document.addEventListener("contextmenu", function (event) {
-  event.preventDefault();
-});
+import { spawnErrorTag, shuffleArray, delay, flashMunicipality, startGame, expand, nextMunicipality } from "./utils.js";
 
-async function spawnErrorTag(m, event) {
-  const errorTag = document.createElement("span");
-  errorTag.innerHTML = `<span id="errTag" class="tag is-danger">${m.id}</span>`;
-  document.body.append(errorTag);
-  errorTag.classList.add("errorTag");
 
-  errorTag.style.left = `${event.clientX - parseFloat(window.getComputedStyle(errorTag).width) / 2}px`;
-  errorTag.style.top = `${event.clientY - 27}px`;
-
-  await delay(1000);
-
-  errorTag.style.display = "none";
-}
-
-// async function handleErrorTag(m, id) {
-//   const element = await spawnErrorTag(m, event);
-// }
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function flashMunicipality(element) {
-  //   element.style.fillOpacity = 1;
-  //   await delay(500);
-  //   element.style.fillOpacity = 0.5;
-  //   await delay(500);
-  for (let i = 0; i < 3; i++) {
-    element.style.fillOpacity = 1;
-    await delay(350);
-    element.style.fillOpacity = 0.5;
-    await delay(350);
-  }
-  element.style.fillOpacity = 1;
-  await delay(500);
-}
-
-document.body.onload = () => {
-  document.querySelector("#buttons-div").style.display = "block";
-};
-
-const BosniaAndHerzegovina = document.querySelector("#BosniaAndHerzegovina");
+// const BosniaAndHerzegovina = document.querySelector("#BosniaAndHerzegovina");
+// const map = document.querySelector("svg");
 const municipalities = document.querySelectorAll(".municipality");
-const map = document.querySelector("svg");
-
 const startGameButton = document.querySelector("#game-start");
 const municipalityName = document.querySelector("#municipality-name");
 
@@ -62,31 +11,44 @@ let counter = 1;
 let tries = 0;
 let points = 0;
 let numberOfMunicipalities = municipalities.length;
-// let numberOfMunicipalities = 10;
+
+const municipalityNames = [];
+for (let m of municipalities) {
+  municipalityNames.push(m.id);
+}
+const randomArray = shuffleArray(municipalityNames); // niz random imena koje treba pogoditi
+
+const controlButtons = document.querySelector("#buttons-div");
+
+
+
+document.addEventListener("contextmenu", function (event) {
+  event.preventDefault();
+});
+
+startGameButton.addEventListener("click", function() {
+  startGame(municipalityName, startGameButton, randomArray[0]);
+});
+
+
+startGameButton.addEventListener("click", function () {
+  this.style.display = "none";
+  expand(controlButtons);
+});
+
+
+document.body.onload = () => {
+  document.querySelector("#buttons-div").style.display = "block";
+};
 
 // BosniaAndHerzegovina.addEventListener("click", (event) => {
 //   event.stopPropagation();
 //   console.log("BOSNA KLIK");
 // });
 
-const municipalityNames = [];
-for (let m of municipalities) {
-  municipalityNames.push(m.id);
-}
 
-const randomArray = shuffleArray(municipalityNames); // niz random imena koje treba pogoditi
 
-function startGame() {
-  municipalityName.innerText = randomArray[0];
-  startGameButton.removeEventListener("click", startGame);
-}
 
-function nextMunicipality() {
-  municipalityName.innerText = randomArray[++points];
-  counter++;
-}
-
-startGameButton.addEventListener("click", startGame);
 
 // console.log(randomArray);
 
@@ -151,6 +113,7 @@ for (let m of municipalities) {
       // m.style.userSelect = "auto";
     }
     if (municipalityName.innerText === m.id) {
+      let oldNumberTries = currentTries;
       currentTries = 0;
       console.log("POGODIO");
       console.log(m.id);
@@ -160,7 +123,27 @@ for (let m of municipalities) {
       m.style.pointerEvents = "none";
       m.style.userSelect = "none";
       m.style.fill = municipalityColor;
-      nextMunicipality();
+
+      // const successMessage = document.createElement();
+      // successMessage.innerHTML = `<button class="button is-primary is-dark successful-guess">${m.id}</button>`;
+      let color = "is-primary";
+      if (oldNumberTries === 1) {
+        color = "is-primary";
+      } else if (oldNumberTries === 2) {
+        color = "is-warning";
+      } else if (oldNumberTries === 3) {
+        color = "is-danger";
+      } else {
+        color = "is-danger is-inverted";
+      }
+      document
+        .querySelector("#successful-guesses")
+        .insertAdjacentHTML(
+          "afterbegin",
+          `<button class="button ${color} is-dark successful-guess ${color}">${m.id}</button>`
+        );
+
+      nextMunicipality(municipalityName, randomArray[++points], counter);
 
       for (let mun of municipalities) {
         if (mun.style.fillOpacity != 1) {
@@ -180,15 +163,33 @@ for (let m of municipalities) {
   });
 }
 
-const controlbButtons = document.querySelector("#buttons-div");
 
-startGameButton.addEventListener("click", function () {
-  this.style.display = "none";
-  expand();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// privremeno
+document.querySelector("#game-restart").addEventListener("click", function () {
+  document
+    .querySelector("#successful-guesses")
+    .insertAdjacentHTML(
+      "afterbegin",
+      `<button class="button is-primary is-dark successful-guess">aaaaaaaaaaaaaa</button>`
+    );
 });
 
-function expand() {
-  controlbButtons.style.transition = "1s";
-  controlbButtons.style.width = "400px";
-  controlbButtons.style.height = "200px";
-}
