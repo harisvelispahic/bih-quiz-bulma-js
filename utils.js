@@ -29,7 +29,7 @@ export function delay(ms) {
 }
 
 export async function flashMunicipality(element) {
- for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     element.style.fillOpacity = 1;
     await delay(350);
     element.style.fillOpacity = 0.5;
@@ -53,4 +53,20 @@ export function expand(controlButtons) {
   controlButtons.style.transition = "1s";
   controlButtons.style.width = "400px";
   controlButtons.style.height = "200px";
+}
+
+export function mouseoverSVG(municipality) {
+  municipality.style.transition = "100ms";
+  municipality.style.fillOpacity = 1;
+  municipality.style.stroke = "#000000";
+  // m.style.strokeWidth = 3;
+
+  // console.log(m.id);
+}
+
+export function createMouseoutHandler(municipality) {
+  return () => {
+    municipality.style.fillOpacity = 0.7;
+    municipality.style.stroke = "#bbbbbb";
+  };
 }

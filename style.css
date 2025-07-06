@@ -87,3 +87,44 @@ body {
 body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+/* Striped is-danger button override */
+.button.is-danger.is-inverted {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 255, 255, 0.3) 4px,
+    rgba(255, 255, 255, 0.3) 8px
+  ) !important;
+}
+
+.button.is-danger.is-inverted:hover {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 255, 255, 0.4) 4px,
+    rgba(255, 255, 255, 0.4) 8px
+  ) !important;
+}
+
+.button.is-danger.is-inverted:focus {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 255, 255, 0.4) 4px,
+    rgba(255, 255, 255, 0.4) 8px
+  ) !important;
+}
+
+.button.is-danger.is-inverted:active {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 255, 255, 0.5) 4px,
+    rgba(255, 255, 255, 0.5) 8px
+  ) !important;
+}

@@ -1,5 +1,14 @@
-import { spawnErrorTag, shuffleArray, delay, flashMunicipality, startGame, expand, nextMunicipality } from "./utils.js";
-
+import {
+  spawnErrorTag,
+  shuffleArray,
+  delay,
+  flashMunicipality,
+  startGame,
+  expand,
+  nextMunicipality,
+  mouseoverSVG,
+  createMouseoutHandler,
+} from "./utils.js";
 
 // const BosniaAndHerzegovina = document.querySelector("#BosniaAndHerzegovina");
 // const map = document.querySelector("svg");
@@ -7,8 +16,9 @@ const municipalities = document.querySelectorAll(".municipality");
 const startGameButton = document.querySelector("#game-start");
 const municipalityName = document.querySelector("#municipality-name");
 
-let counter = 1;
+let counter = 0;
 let tries = 0;
+let currentTries = 0;
 let points = 0;
 let numberOfMunicipalities = municipalities.length;
 
@@ -20,22 +30,18 @@ const randomArray = shuffleArray(municipalityNames); // niz random imena koje tr
 
 const controlButtons = document.querySelector("#buttons-div");
 
-
-
 document.addEventListener("contextmenu", function (event) {
   event.preventDefault();
 });
 
-startGameButton.addEventListener("click", function() {
+startGameButton.addEventListener("click", function () {
   startGame(municipalityName, startGameButton, randomArray[0]);
 });
-
 
 startGameButton.addEventListener("click", function () {
   this.style.display = "none";
   expand(controlButtons);
 });
-
 
 document.body.onload = () => {
   document.querySelector("#buttons-div").style.display = "block";
@@ -46,35 +52,20 @@ document.body.onload = () => {
 //   console.log("BOSNA KLIK");
 // });
 
-
-
-
-
 // console.log(randomArray);
 
 // map.addEventListener("click",()=>{
 //     console.log("mapa click");
 // })
 
-let currentTries = 0;
 for (let m of municipalities) {
   const municipalityColor = m.style.fill;
   //   tries++;
-  const mouseoutSVG = () => {
-    // m.style.opacity = 0.7;
-    m.style.fillOpacity = 0.7;
-    m.style.stroke = "#bbbbbb";
-  };
+  const mouseoutSVG = createMouseoutHandler(m);
 
-  m.addEventListener("mouseover", () => {
-    m.style.transition = "100ms";
-    m.style.fillOpacity = 1;
-    m.style.stroke = "#000000";
-    // m.style.strokeWidth = 3;
-
-    // console.log(m.id);
-  });
+  m.addEventListener("mouseover", () => mouseoverSVG(m));
   m.addEventListener("mouseout", mouseoutSVG);
+
   m.addEventListener("click", (event) => {
     // console.log(m.id);
     // m.style.fillOpacity = 1;
@@ -83,14 +74,16 @@ for (let m of municipalities) {
 
     currentTries++;
 
+    // incorrect guess (general)
     if (municipalityName.innerText !== m.id) {
       spawnErrorTag(m, event);
     }
 
+    // incorrect guess (after 3 guesses)
     if (currentTries === 3 && municipalityName.innerText !== m.id) {
-      currentTries = 0;
+      currentTries = -1;
 
-      console.log("Niste pogodili opcinu");
+      // console.log("Niste pogodili opcinu");
       const missedMunicipality = document.querySelector(`[id="${municipalityName.innerText}"]`);
       missedMunicipality.style.fillOpacity = 1;
       missedMunicipality.style.stroke = "#000000";
@@ -112,11 +105,13 @@ for (let m of municipalities) {
       // m.style.pointerEvents = "auto";
       // m.style.userSelect = "auto";
     }
+
+    // correct guess
     if (municipalityName.innerText === m.id) {
       let oldNumberTries = currentTries;
       currentTries = 0;
-      console.log("POGODIO");
-      console.log(m.id);
+      // console.log("POGODIO");
+      // console.log(m.id);
       m.style.fillOpacity = 1;
       m.removeEventListener("mouseout", mouseoutSVG);
 
@@ -124,64 +119,57 @@ for (let m of municipalities) {
       m.style.userSelect = "none";
       m.style.fill = municipalityColor;
 
-      // const successMessage = document.createElement();
-      // successMessage.innerHTML = `<button class="button is-primary is-dark successful-guess">${m.id}</button>`;
-      let color = "is-primary";
+      // decide the color of the guessed municipalities log
+      let color = "is-dark is-primary";
       if (oldNumberTries === 1) {
-        color = "is-primary";
+        color = "is-dark is-primary";
       } else if (oldNumberTries === 2) {
-        color = "is-warning";
+        color = "is-dark is-warning";
       } else if (oldNumberTries === 3) {
-        color = "is-danger";
+        color = "is-dark is-danger";
       } else {
         color = "is-danger is-inverted";
+        currentTries = 0;
       }
       document
         .querySelector("#successful-guesses")
-        .insertAdjacentHTML(
-          "afterbegin",
-          `<button class="button ${color} is-dark successful-guess ${color}">${m.id}</button>`
-        );
+        .insertAdjacentHTML("afterbegin", `<button class="button ${color} successful-guess">${m.id}</button>`);
 
       nextMunicipality(municipalityName, randomArray[++points], counter);
 
+      // give back option to be clicked to all non-already-guessed municipalities
       for (let mun of municipalities) {
         if (mun.style.fillOpacity != 1) {
-          //   console.log("Info");
           mun.style.pointerEvents = "auto";
           mun.style.userSelect = "auto";
         }
       }
     }
 
-    if (tries === numberOfMunicipalities - 1) {
+    // game ending clause
+    if (tries === numberOfMunicipalities) {
       //   alert(`GAME OVER\nSCORE: ${((points / numberOfMunicipalities) * 100).toFixed(1)}%`);
-      municipalityName.innerText = `Rezultat: ${points} / ${numberOfMunicipalities}`;
+      municipalityName.innerText = `Rezultat: ${points} / ${numberOfMunicipalities} (${(
+        (points / numberOfMunicipalities) *
+        100
+      ).toFixed(1)}%)`;
+
+      counter = 0;
+      tries = 0;
+      currentTries = 0;
+      points = 0;
+
+      // da sve disabluje, refaktorovati u posebnu funkciju jer se koristi na dva mjesta
+      for (let mun of municipalities) {
+        mun.style.pointerEvents = "none";
+        mun.style.userSelect = "none";
+      }
     }
+
     tries++;
-    console.log(tries);
+    // console.log(tries);
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // privremeno
 document.querySelector("#game-restart").addEventListener("click", function () {
@@ -192,4 +180,3 @@ document.querySelector("#game-restart").addEventListener("click", function () {
       `<button class="button is-primary is-dark successful-guess">aaaaaaaaaaaaaa</button>`
     );
 });
-
