@@ -29,9 +29,12 @@ export function delay(ms) {
 }
 
 export async function flashMunicipality(element) {
+  element._flashCancel = false; // reset cancel flag
   for (let i = 0; i < 3; i++) {
+    if (element._flashCancel) break;
     element.style.fillOpacity = 1;
     await delay(350);
+    if (element._flashCancel) break;
     element.style.fillOpacity = 0.5;
     await delay(350);
   }
