@@ -29,7 +29,7 @@ const municipalityNames = [];
 for (let m of municipalities) {
   municipalityNames.push(m.id);
 }
-let randomArray = shuffleArray(municipalityNames); // niz random imena koje treba pogoditi
+let randomArray = shuffleArray(municipalityNames); // niz random imena koje treba pogodit
 
 const controlButtons = document.querySelector("#buttons-div");
 
@@ -39,9 +39,6 @@ document.addEventListener("contextmenu", function (event) {
 
 startGameButton.addEventListener("click", function () {
   startGame(municipalityName, startGameButton, randomArray[0]);
-});
-
-startGameButton.addEventListener("click", function () {
   this.style.display = "none";
   expand(controlButtons);
 });
@@ -65,10 +62,10 @@ const MAX_TRIES = 3;
 const MISSED_COLOR = "magenta";
 
 // Store original color for each municipality at the start
-for (let m of municipalities) {
-  const originalFill = m.style.fill || m.getAttribute("fill") || "#bbbbbb";
-  m.setAttribute("data-original-fill", originalFill);
-}
+// for (let m of municipalities) {
+//   const originalFill = m.style.fill || m.getAttribute("fill") || "#bbbbbb";
+//   m.setAttribute("data-original-fill", originalFill);
+// }
 
 function disableAllMunicipalities() {
   for (let mun of municipalities) {
@@ -107,7 +104,8 @@ function handleCorrectGuess(municipality, mouseoutSVG, oldNumberTries) {
   currentTries = 0;
   // If municipality was missed (magenta), restore its original color
   if (municipality.style.fill === MISSED_COLOR) {
-    municipality.style.fill = municipality.getAttribute("data-original-fill");
+    // Remove the inline fill style to let CSS classes handle the color
+    municipality.style.removeProperty('fill');
   }
   municipality.style.fillOpacity = 1;
   municipality.removeEventListener("mouseout", mouseoutSVG);
@@ -167,7 +165,8 @@ function resetGame() {
     mun.style.userSelect = "auto";
     mun.style.fillOpacity = 0.7;
     mun.style.stroke = "#bbbbbb";
-    mun.style.fill = mun.getAttribute("data-original-fill");
+    // Remove inline fill style to let CSS classes handle the color
+    mun.style.removeProperty('fill');
     mun._flashCancel = true;
     // Remove all old event listeners by replacing with a clone, if parentNode exists
     if (mun.parentNode) {

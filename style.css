@@ -2,6 +2,63 @@
   box-sizing: border-box;
 }
 
+.municipality {
+  stroke: #bbbbbb;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  cursor: pointer;
+  fill-opacity: 0.7;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.ZDK {
+  fill: rgb(34, 139, 34);
+}
+
+.KS {
+  fill: rgb(130, 26, 255);
+}
+
+.HNK {
+  fill: rgb(0, 191, 255);
+}
+
+.SBK {
+  fill: rgb(255, 146, 26);
+}
+
+.TK {
+  fill: rgb(158, 220, 0);
+}
+
+.ZHK {
+  fill: rgb(255, 65, 65);
+}
+
+.BPK {
+  fill: rgb(28, 26, 255);
+}
+
+.USK {
+  fill: #228b22;
+}
+
+.K10 {
+  fill: rgb(65, 105, 225);
+}
+
+.PK {
+  fill: rgb(184, 26, 255);
+}
+
+.BD {
+  fill: rgb(58, 59, 80);
+}
+
+.RS {
+  fill: #b22222;
+}
+
 #svgDiv {
   display: flex;
   justify-content: center;
@@ -128,3 +185,12 @@ body::-webkit-scrollbar {
     rgba(255, 255, 255, 0.5) 8px
   ) !important;
 }
+
+/* .svg-municipality-path {
+  stroke: #bbbbbb;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  cursor: pointer;
+  fill-opacity: 0.7;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+} */
